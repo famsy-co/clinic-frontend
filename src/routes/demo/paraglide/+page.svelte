@@ -3,7 +3,7 @@
 	import { i18n } from '$lib/i18n';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import * as m from '$lib/paraglide/messages.js';
+	import * as m from '$lib/paraglide/messages';
 
 	function switchToLanguage(newLanguage: AvailableLanguageTag) {
 		const canonicalPath = i18n.route($page.url.pathname);
