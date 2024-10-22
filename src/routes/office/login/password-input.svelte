@@ -16,10 +16,7 @@
 		onclick={() => (isVisible = !isVisible)}
 	>
 		{#key isVisible}
-			<div
-				transition:scale
-				class="absolute inset-0 text-[#A1ACBD] transition hover:scale-90"
-			>
+			<div transition:scale class="absolute inset-0 text-[#A1ACBD]">
 				{#if isVisible}
 					<EyeOff />
 				{:else}
