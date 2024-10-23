@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
 	import TextInput from './text-input.svelte';
-	import { cn } from '$lib/utils/cn';
+	import { cn } from '$lib';
 	import { EyeOff, Eye } from 'svelte-feathers';
 	import { scale } from 'svelte/transition';
 	let { class: className, ...props }: ComponentProps<TextInput> = $props();
