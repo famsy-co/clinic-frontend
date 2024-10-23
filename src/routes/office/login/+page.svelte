@@ -3,7 +3,7 @@
 	import TextInput from './text-input.svelte';
 	import PasswordInput from './password-input.svelte';
 	import Button from './button.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { m } from '$lib';
 </script>
 
 <LoginLayout>
