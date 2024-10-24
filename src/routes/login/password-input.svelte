@@ -4,12 +4,21 @@
 	import { cn } from '$lib';
 	import { EyeOff, Eye } from 'svelte-feathers';
 	import { scale } from 'svelte/transition';
-	let { class: className, ...props }: ComponentProps<TextInput> = $props();
+	let {
+		class: className,
+		value = $bindable(''),
+		...props
+	}: ComponentProps<TextInput> = $props();
 	let isVisible = $state(false);
 </script>
 
 <div class={cn('relative w-full', className)}>
-	<TextInput class="" type={isVisible ? 'text' : 'password'} {...props} />
+	<TextInput
+		bind:value
+		class=""
+		type={isVisible ? 'text' : 'password'}
+		{...props}
+	/>
 	<button
 		class="absolute left-3 top-1/2 size-6 -translate-y-1/2
 		"
