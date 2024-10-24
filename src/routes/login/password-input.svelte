@@ -20,6 +20,7 @@
 		{...props}
 	/>
 	<button
+		type="button"
 		class="absolute left-3 top-1/2 size-6 -translate-y-1/2
 		"
 		onclick={() => (isVisible = !isVisible)}
