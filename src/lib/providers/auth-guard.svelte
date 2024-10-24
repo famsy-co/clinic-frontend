@@ -9,11 +9,15 @@
 			},
 			logout() {
 				StorageService.reset();
-				goto('/login');
+				goto('/login', {
+					replaceState: true,
+				});
 			},
 			login(u: User) {
 				StorageService.user.value = u;
-				goto('/');
+				goto('/', {
+					replaceState: true,
+				});
 			},
 		});
 		return auth;
