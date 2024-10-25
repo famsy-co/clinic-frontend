@@ -8,7 +8,7 @@
 		class: className,
 		value = $bindable(''),
 		...props
-	}: ComponentProps<TextInput> = $props();
+	}: ComponentProps<typeof TextInput> = $props();
 	let isVisible = $state(false);
 </script>
 
@@ -26,7 +26,7 @@
 		onclick={() => (isVisible = !isVisible)}
 	>
 		{#key isVisible}
-			<div transition:scale class="absolute inset-0 text-[#A1ACBD]">
+			<div transition:scale class="absolute inset-0 text-soft-100">
 				{#if isVisible}
 					<EyeOff />
 				{:else}
