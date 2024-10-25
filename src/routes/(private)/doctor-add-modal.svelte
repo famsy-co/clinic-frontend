@@ -1,0 +1,130 @@
+<script lang="ts">
+	import Modal from '$lib/components/modal.svelte';
+	import TextInput from '$lib/components/text-input.svelte';
+	import Button from '$lib/components/button.svelte';
+	import { Plus } from 'svelte-feathers';
+	import { m } from '$lib';
+
+	interface Props {
+		isOpen?: boolean;
+		onClose?(): void;
+	}
+	let { isOpen, onClose }: Props = $props();
+
+	let mouseX = $state(0);
+	let mouseY = $state(0);
+</script>
+
+<Modal {isOpen} {onClose}>
+	<div
+		role="dialog"
+		onmousemove={(e) => {
+			const { left, top } = e.currentTarget.getBoundingClientRect();
+			mouseX = e.x - left;
+			mouseY = e.y - top;
+		}}
+		style:--mouse-y={mouseY + 'px'}
+		style:--mouse-x={mouseX + 'px'}
+		class="gradient-border absolute left-1/2 top-1/2 -translate-x-1/2
+		-translate-y-1/2 rounded-[20px] bg-foreground-20 p-1
+		backdrop-blur-lg"
+	>
+		<div
+			class="mask relative z-10 flex h-[569px] w-[495px] flex-col rounded-[16px] bg-transparent pb-8"
+		>
+			<button
+				onclick={onClose}
+				class="m-4 mb-8 flex size-8
+				items-center justify-center rounded-lg bg-[#256159]
+				transition hover:bg-secondary-100 active:scale-90"
+			>
+				<Plus class="size-6 rotate-45 text-foreground-100" />
+			</button>
+			<div class="flex flex-1 flex-col gap-5 px-9">
+				<div class="flex gap-3">
+					<TextInput
+						placeholder={m.office_modal__name()}
+						class="bg-foreground-100"
+					/>
+					<TextInput
+						placeholder={m.office_modal__surname()}
+						class="bg-foreground-100"
+					/>
+				</div>
+				<TextInput
+					placeholder={m.office_modal__doctoral_code()}
+					class="bg-foreground-100"
+				/>
+				<TextInput
+					placeholder={m.office_modal__national_code()}
+					class="bg-foreground-100"
+				/>
+				<TextInput
+					placeholder={m.office_modal__speciality_field()}
+					class="bg-foreground-100"
+				/>
+				<TextInput
+					placeholder={m.office_modal__speciality()}
+					class="bg-foreground-100"
+				/>
+				<TextInput
+					placeholder={m.office_modal__email_optional()}
+					class="bg-foreground-100"
+				/>
+				<Button class="mt-auto">{m.office_modal__submit()}</Button>
+			</div>
+		</div>
+	</div>
+</Modal>
+
+<style>
+	.gradient-border {
+		--secondary: #4bc7b7;
+		--secondary-2: #256159;
+		&::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: 16px;
+			border: 4px solid transparent;
+			background: linear-gradient(to top, var(--secondary), var(--secondary-2))
+				border-box;
+			-webkit-mask:
+				linear-gradient(#fff 0 0) padding-box,
+				linear-gradient(#fff 0 0);
+			mask:
+				linear-gradient(#fff 0 0) padding-box,
+				linear-gradient(#fff 0 0);
+			-webkit-mask-composite: destination-out;
+			mask-composite: exclude;
+		}
+		&::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: 16px;
+			border: 4px solid transparent;
+			background: radial-gradient(
+					150px circle at var(--mouse-x) var(--mouse-y),
+					var(--secondary),
+					transparent
+				)
+				border-box;
+			-webkit-mask:
+				linear-gradient(#fff 0 0) padding-box,
+				linear-gradient(#fff 0 0);
+			mask:
+				linear-gradient(#fff 0 0) padding-box,
+				linear-gradient(#fff 0 0);
+			-webkit-mask-composite: destination-out;
+			mask-composite: exclude;
+			opacity: 0;
+			transition: opacity 300ms;
+		}
+		&:hover {
+			&::after {
+				opacity: 1;
+			}
+		}
+	}
+</style>
