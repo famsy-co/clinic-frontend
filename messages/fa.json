@@ -1,8 +1,16 @@
-{
+{	
 	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"general_order": "ردیف",
 	"hello_world": "Hello, {name} from fa!",
 	"error_field_required": "این فیلد الزامیست",
 	"login__login": "ورود",
 	"login__username": "نام کاربری",
-	"login__password": "رمز عبور"
+	"login__password": "رمز عبور",
+	"office_address": "آدرس:",
+	"office_phone_number": "شماره تلفن:",
+	"office_postal_code": "کد پستی:",
+	"office_home_doctors": "پزشکان",
+	"office_home_doctor_name": "نام پزشک",
+	"office_home_doctoralCode": "کد نظام پزشکی",
+	"office_home_specialty": "تخصص"
 }
