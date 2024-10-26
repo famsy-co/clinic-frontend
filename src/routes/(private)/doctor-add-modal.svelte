@@ -4,6 +4,7 @@
 	import Button from '$lib/components/button.svelte';
 	import { Plus } from 'svelte-feathers';
 	import { m } from '$lib';
+	import { fly } from 'svelte/transition';
 
 	interface Props {
 		isOpen?: boolean;
@@ -16,7 +17,7 @@
 </script>
 
 <Modal {isOpen} {onClose}>
-	<div
+	<div transition:fly|global = {{y:100}}    
 		role="dialog"
 		onmousemove={(e) => {
 			const { left, top } = e.currentTarget.getBoundingClientRect();
@@ -26,7 +27,7 @@
 		style:--mouse-y={mouseY + 'px'}
 		style:--mouse-x={mouseX + 'px'}
 		class="gradient-border absolute left-1/2 top-1/2 -translate-x-1/2
-		-translate-y-1/2 rounded-[20px] bg-foreground-20 p-1
+		-translate-y-1/2 rounded-[20px] bg-[#256159]/10 p-1
 		backdrop-blur-lg"
 	>
 		<div

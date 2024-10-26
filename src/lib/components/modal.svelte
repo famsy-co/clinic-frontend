@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { fly } from 'svelte/transition';
+	import { blur } from 'svelte/transition';
 	interface ModalProps {
 		children: Snippet;
 		isOpen?: boolean;
@@ -11,12 +11,13 @@
 </script>
 
 {#if isOpen}
-	<div transition:fly={{ y: 50 }} class="fixed inset-0 backdrop-blur-sm">
+	<div class="fixed inset-0">
 		<button
+		    transition:blur|global
 			onclick={onClose}
 			aria-label="close modal"
 			class="absolute
-			inset-0"
+			inset-0 backdrop-blur-[2px]"
 		>
 		</button>
 		<div class="absolute inset-0 contents">
