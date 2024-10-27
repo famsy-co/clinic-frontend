@@ -10,7 +10,7 @@
 
 	let { onAddDoctor }: Props = $props();
 
-	let search = $state(true);
+	let search = $state(false);
 	const doctors = [
 		{
 			fullName: 'مهران احمدی',
@@ -23,6 +23,12 @@
 			specialty: 'فوق تخصص مغز و اعصاب',
 		},
 	];
+	let input: HTMLInputElement | undefined = $state();
+	$effect(() => {
+		if (input != null && search) {
+			input.focus();
+		}
+	});
 </script>
 
 <div class="m-20 mt-14 min-h-[180px] rounded-2xl border border-dark-main-100">
@@ -35,7 +41,9 @@
 		<div class="flex gap-5">
 			<div class="flex items-center">
 				<button
-					onclick={() => (search = !search)}
+					onclick={() => {
+						search = true;
+					}}
 					class="relative size-6 transition active:scale-95"
 				>
 					{#key search}
@@ -44,9 +52,7 @@
 							class="absolute
 							top-0 size-full"
 						>
-							{#if search}
-								<Plus class="rotate-45" />
-							{:else}
+							{#if !search}
 								<Search />
 							{/if}
 						</div>
@@ -54,7 +60,12 @@
 				</button>
 				{#if search}
 					<div transition:slide={{ axis: 'x' }} class="relative pr-5">
-						<TextInput />
+						<TextInput
+							bind:ref={input}
+							onblur={() => {
+								search = false;
+							}}
+						/>
 						<div
 							transition:fly|global={{ x: 25 }}
 							class="absolute left-2 top-1/2 -translate-y-1/2
