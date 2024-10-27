@@ -25,7 +25,7 @@
 
 <Modal {isOpen} {onClose}>
 	<div
-		transition:fly|global={{ y: 100 }}
+		transition:fly|global={{ y: 25 }}
 		role="dialog"
 		onmousemove={onMouseMove}
 		style:--mouse-y={mouseY + 'px'}
