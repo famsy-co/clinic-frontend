@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
 	import { m } from '$lib';
-	import { scale } from 'svelte/transition';
+	import { scale , slide , blur } from 'svelte/transition';
 	import Button from './button.svelte';
+	import TextInput from '$lib/components/text-input.svelte';
+	import { setParaglideContext } from '@inlang/paraglide-sveltekit/internal';
 	interface Props {
 		onAddDoctor?(): void;
 	}
@@ -10,6 +12,7 @@
 	let { onAddDoctor }: Props = $props();
 
 	let search = $state(false);
+
 	const doctors = [
 		{
 			fullName: 'مهران احمدی',
@@ -32,9 +35,29 @@
 		<p>{m.office_home_doctors()}</p>
 
 		<div class="flex gap-5">
-			<button class="transition active:scale-95" transition:scale>
-				<Search />
-			</button>
+
+			{#if search}
+				<div class="flex flex-row bg-foreground-100 h-10 rounded -translate-x-2"
+				     transition:slide = {{axis: 'x'}}>
+					<TextInput class="focus:border-none text-dark-main-100" />
+					<button
+						onclick={() => { search = false }}
+						class="transition active:scale-95"
+						transition:scale>
+						<Search class="text-dark-main-100 ml-2"/>
+					</button>
+				</div>
+
+			{:else}
+				<button
+				    onclick={() => { search = true }}
+				    class="transition active:scale-95"
+					transition:scale>
+					<Search />
+				</button>
+			{/if}
+			
+
 			<button
 				onclick={onAddDoctor}
 				class="transition active:scale-95"
