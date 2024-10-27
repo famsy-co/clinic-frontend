@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
 	import { m } from '$lib';
-	import { scale } from 'svelte/transition';
+	import { blur, fade, fly, scale, slide } from 'svelte/transition';
 	import Button from './button.svelte';
+	import TextInput from '$lib/components/text-input.svelte';
 	interface Props {
 		onAddDoctor?(): void;
 	}
 
 	let { onAddDoctor }: Props = $props();
 
-	let search = $state(false);
+	let search = $state(true);
 	const doctors = [
 		{
 			fullName: 'مهران احمدی',
@@ -32,9 +33,38 @@
 		<p>{m.office_home_doctors()}</p>
 
 		<div class="flex gap-5">
-			<button class="transition active:scale-95" transition:scale>
-				<Search />
-			</button>
+			<div class="flex items-center">
+				<button
+					onclick={() => (search = !search)}
+					class="relative size-6 transition active:scale-95"
+				>
+					{#key search}
+						<div
+							transition:fly={{ x: -25 }}
+							class="absolute
+							top-0 size-full"
+						>
+							{#if search}
+								<Plus class="rotate-45" />
+							{:else}
+								<Search />
+							{/if}
+						</div>
+					{/key}
+				</button>
+				{#if search}
+					<div transition:slide={{ axis: 'x' }} class="relative pr-5">
+						<TextInput />
+						<div
+							transition:fly|global={{ x: 25 }}
+							class="absolute left-2 top-1/2 -translate-y-1/2
+							text-main-100"
+						>
+							<Search />
+						</div>
+					</div>
+				{/if}
+			</div>
 			<button
 				onclick={onAddDoctor}
 				class="transition active:scale-95"
@@ -75,4 +105,3 @@
 		</tbody>
 	</table>
 </div>
-
