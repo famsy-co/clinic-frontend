@@ -48,7 +48,7 @@
 				>
 					{#key search}
 						<div
-							transition:fly={{ x: -25 }}
+							transition:fly={{ x: -100 }}
 							class="absolute
 							top-0 size-full"
 						>
@@ -65,10 +65,11 @@
 							onblur={() => {
 								search = false;
 							}}
+							class="pl-10 text-dark-main-100"
 						/>
 						<div
 							transition:fly|global={{ x: 25 }}
-							class="absolute left-2 top-1/2 -translate-y-1/2
+							class="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2
 							text-main-100"
 						>
 							<Search />
