@@ -20,5 +20,11 @@ class _StorageService {
 			);
 		});
 	}
+
+	public user_token = new LocalStorageSlot<string | null>(
+		'user_token',
+		null,
+	  );
+	  
 }
 export const StorageService = new _StorageService();
