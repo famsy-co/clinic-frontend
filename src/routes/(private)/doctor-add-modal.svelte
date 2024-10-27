@@ -2,14 +2,21 @@
 	import Modal from '$lib/components/modal.svelte';
 	import TextInput from '$lib/components/text-input.svelte';
 	import Button from '$lib/components/button.svelte';
+	import _ from 'lodash';
 	import { Plus } from 'svelte-feathers';
 	import { m } from '$lib';
 	import { fly } from 'svelte/transition';
+	import type { MouseEventHandler } from 'svelte/elements';
 
 	interface Props {
 		isOpen?: boolean;
 		onClose?(): void;
 	}
+	const onMouseMove = _.throttle<MouseEventHandler<HTMLDivElement>>((e) => {
+		const { left, top } = e.currentTarget.getBoundingClientRect();
+		mouseX = e.x - left;
+		mouseY = e.y - top;
+	}, 75);
 	let { isOpen, onClose }: Props = $props();
 
 	let mouseX = $state(0);
@@ -17,13 +24,10 @@
 </script>
 
 <Modal {isOpen} {onClose}>
-	<div transition:fly|global = {{y:100}}    
+	<div
+		transition:fly|global={{ y: 100 }}
 		role="dialog"
-		onmousemove={(e) => {
-			const { left, top } = e.currentTarget.getBoundingClientRect();
-			mouseX = e.x - left;
-			mouseY = e.y - top;
-		}}
+		onmousemove={onMouseMove}
 		style:--mouse-y={mouseY + 'px'}
 		style:--mouse-x={mouseX + 'px'}
 		class="gradient-border absolute left-1/2 top-1/2 -translate-x-1/2
