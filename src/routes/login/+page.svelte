@@ -1,8 +1,8 @@
 <script lang="ts">
 	import LoginLayout from './login-layout.svelte';
-	import TextInput from './text-input.svelte';
+	import TextInput from '$lib/components/text-input.svelte';
 	import PasswordInput from './password-input.svelte';
-	import Button from './button.svelte';
+	import Button from '$lib/components/button.svelte';
 	import ErrorMessage from './error-message.svelte';
 	import { m } from '$lib';
 	import { useAuth } from '$lib/providers/auth-guard.svelte';

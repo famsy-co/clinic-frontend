@@ -1,15 +1,17 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-
-	let { label, children }: { label: string; children: Snippet } = $props();
-	const names = ['yusef', 'mammad', 'hasan', 'ali'];
+	import { cn } from '$lib';
+	import type { HTMLButtonAttributes } from 'svelte/elements';
+	let { class: className, children, ...props }: HTMLButtonAttributes = $props();
 </script>
 
-<h1>{label}</h1>
-<button>
-	{@render children()}
+<button
+	class={cn(
+		'h-10 w-full rounded bg-secondary-100 text-foreground-100 transition active:scale-95',
+		className,
+	)}
+	{...props}
+>
+	{#if children}
+		{@render children()}
+	{/if}
 </button>
-
-{#each names as name}
-	<h1>hello {name}</h1>
-{/each}

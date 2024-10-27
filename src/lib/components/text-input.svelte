@@ -12,7 +12,7 @@
 	bind:value
 	type="text"
 	class={cn(
-		'h-10 w-full rounded bg-foreground-80 px-3 text-sm placeholder-main-60 outline-none',
+		'h-10 w-full rounded border border-transparent bg-foreground-80 		px-3 text-sm placeholder-main-60 outline-none transition focus:border-[#256159]',
 		className,
 	)}
 	{...props}

@@ -1,4 +1,4 @@
-{	
+{
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"general_order": "ردیف",
 	"hello_world": "Hello, {name} from fa!",
@@ -12,5 +12,13 @@
 	"office_home_doctors": "پزشکان",
 	"office_home_doctor_name": "نام پزشک",
 	"office_home_doctoralCode": "کد نظام پزشکی",
-	"office_home_specialty": "تخصص"
+	"office_home_specialty": "تخصص",
+	"office_modal__name": "نام",
+	"office_modal__surname": "نام خانوادگی",
+	"office_modal__doctoral_code": "شماره‌ی نظام پزشکی",
+	"office_modal__national_code": "کد ملی",
+	"office_modal__speciality_field": "زمینه‌ی تخصص",
+	"office_modal__speciality": "تخصص",
+	"office_modal__email_optional": "ایمیل (اختیاری)",
+	"office_modal__submit": "ثبت"
 }
