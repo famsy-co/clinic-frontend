@@ -20,7 +20,7 @@
 		national_code: z.string().min(1),
 		doctor_code: z.string().min(1),
 		speciality: z.string().min(1),
-		email: z.string().email().optional(),
+		email: z.union([z.string().email().optional(), z.string().max(0)]),
 	});
 	type Schema = z.infer<typeof schema>;
 
@@ -56,6 +56,7 @@
 						const res = await OfficeService.updateDoctor({
 							...form.data,
 							id: doctor.id,
+							email: form.data.email || undefined,
 						});
 						if (res) {
 							queryClient.invalidateQueries({
@@ -64,7 +65,10 @@
 							onClose?.();
 						}
 					} else {
-						const res = await OfficeService.addDoctor(form.data);
+						const res = await OfficeService.addDoctor({
+							...form.data,
+							email: form.data.email || undefined,
+						});
 						if (res) {
 							queryClient.invalidateQueries({
 								queryKey: ['/office/doctors'],
