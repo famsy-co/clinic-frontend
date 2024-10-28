@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
+	import { flip } from 'svelte/animate';
 	import { m } from '$lib';
 	import { fly, scale, slide } from 'svelte/transition';
 	import Button from './button.svelte';
@@ -9,6 +10,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { queryClient } from '../+layout.svelte';
 	import type { Doctor } from '$lib/services/office/interfaces/doctor';
+	import Fuse from 'fuse.js';
 	interface Props {
 		onAddDoctor?(doctor?: Doctor): void;
 	}
@@ -19,6 +21,7 @@
 		OfficeService.getDoctors().then(console.log);
 	});
 	let search = $state(false);
+	let searchValue = $state('');
 	let doctorsQuery = createQuery({
 		queryKey: ['/office/doctors'],
 		queryFn: OfficeService.getDoctors,
@@ -30,11 +33,20 @@
 		});
 	}
 	const doctors = $derived($doctorsQuery.data?.result ?? []);
+	let fuse = new Fuse<Doctor>([], {
+		keys: ['name', 'last_name'],
+	});
 	let input: HTMLInputElement | undefined = $state();
 	$effect(() => {
 		if (input != null && search) {
 			input.focus();
 		}
+	});
+
+	const searchResult = $derived.by(() => {
+		fuse.setCollection(doctors);
+		const res = fuse.search(searchValue);
+		return res.map((item) => item.item);
 	});
 </script>
 
@@ -69,6 +81,7 @@
 					<div transition:slide={{ axis: 'x' }} class="relative pr-5">
 						<TextInput
 							bind:ref={input}
+							bind:value={searchValue}
 							onblur={() => {
 								search = false;
 							}}
@@ -105,7 +118,7 @@
 			</tr>
 		</thead>
 		<tbody class="px-8">
-			{#each doctors as doctor, index}
+			{#each searchResult.length ? searchResult : doctors as doctor, index (doctor.id)}
 				<tr class="border-b-dark-main-10 border-t-[1px] px-8">
 					<td class="py-4 text-center">{index + 1}</td>
 					<td class="py-4 text-center"
