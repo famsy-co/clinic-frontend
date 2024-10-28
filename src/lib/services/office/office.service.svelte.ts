@@ -1,47 +1,61 @@
 import { HttpService } from '../http/http.service';
-import type { DoctorCreateRequestDto } from './dtos/doctor-create.dto';
-import type { DoctorListResponseDto } from './dtos/doctor-list-response.dto';
-import type { DoctorDto } from './dtos/doctor.dto';
-import type { LoginResponseDto } from './dtos/login-response.dto';
-import type { OfficeLoginRequestDto } from './dtos/office-login.dto';
-import type { OfficeResponseDto } from './dtos/office-response.dto';
+import type { DoctorCreateRequestDto } from './dto/doctor-create-request.dto';
+import type { DoctorListResponseDto } from './dto/doctor-list-response.dto';
+import type { DoctorUpdateRequestDto } from './dto/doctor-update-request.dto';
+import type { LoginResponseDto } from './dto/login-response.dto';
+import type { OfficeLoginRequestDto } from './dto/office-login-request.dto';
+import type { Doctor } from './interfaces/doctor';
+import type { Office } from './interfaces/office';
 
 export class OfficeService {
 	public static async login(
 		dto: OfficeLoginRequestDto,
-	): Promise<LoginResponseDto> {
+	): Promise<LoginResponseDto | undefined> {
 		const response = await HttpService.post<LoginResponseDto>(
 			'/auth/office/login',
 			dto,
 		);
-		return response.data;
+		if (response.status < 300) {
+			return response.data;
+		}
 	}
 
-	public static async getOffice(): Promise<OfficeResponseDto> {
-		const response =
-			await HttpService.get<OfficeResponseDto>('/auth/office/self');
-		return response.data;
+	public static async getOffice(): Promise<Office | undefined> {
+		const response = await HttpService.get<Office>('/auth/office/self');
+
+		if (response.status < 300 && response.data) {
+			return;
+		}
 	}
 
 	public static async getDoctors(): Promise<DoctorListResponseDto> {
-		//office id?
 		const response =
 			await HttpService.get<DoctorListResponseDto>('/office/doctors');
 		return response.data;
 	}
 
-	public static async addDoctor(dto: DoctorCreateRequestDto): Promise<> {
-		const response = await HttpService.post<>('/office/doctors', dto);
-		return response.data;
+	public static async addDoctor(
+		dto: DoctorCreateRequestDto,
+	): Promise<Doctor | undefined> {
+		const response = await HttpService.post<Doctor>('/office/doctors', dto);
+		if (response.status < 300 && response.data) {
+			return response.data;
+		}
 	}
 
-	public static async updateDoctor(dto: DoctorDto): Promise<> {
-		const response = await HttpService.put<>('/office/doctors/' + dto.id);
-		return response.data;
+	public static async updateDoctor(
+		dto: DoctorUpdateRequestDto,
+	): Promise<Doctor | undefined> {
+		const response = await HttpService.put<Doctor>('/office/doctors/' + dto.id);
+		if (response.status < 300 && response.data) {
+			return response.data;
+		}
 	}
 
-	public static async deleteDoctor(id: string): Promise<> {
-		const response = await HttpService.delete<>('/office/doctors/' + id);
-		return response.data;
+	public static async deleteDoctor(id: string): Promise<boolean | undefined> {
+		const response = await HttpService.delete<Doctor>('/office/doctors/' + id);
+		if (response.status < 300) {
+			return true;
+		}
 	}
 }
