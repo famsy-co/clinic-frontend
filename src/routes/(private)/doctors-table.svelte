@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
-	import { flip } from 'svelte/animate';
 	import { m } from '$lib';
 	import { fly, scale, slide } from 'svelte/transition';
 	import Button from './button.svelte';
@@ -11,11 +10,13 @@
 	import { queryClient } from '../+layout.svelte';
 	import type { Doctor } from '$lib/services/office/interfaces/doctor';
 	import Fuse from 'fuse.js';
+	import { useAuth } from '$lib/providers/auth-guard.svelte';
 	interface Props {
 		onAddDoctor?(doctor?: Doctor): void;
 	}
 
 	let { onAddDoctor }: Props = $props();
+	const {user} = useAuth()
 
 	onMount(() => {
 		OfficeService.getDoctors().then(console.log);
@@ -23,7 +24,7 @@
 	let search = $state(false);
 	let searchValue = $state('');
 	let doctorsQuery = createQuery({
-		queryKey: ['/office/doctors'],
+		queryKey: ['/office/doctors', user?.office.username],
 		queryFn: OfficeService.getDoctors,
 	});
 	async function removeDoctor(id: string) {
@@ -34,7 +35,7 @@
 	}
 	const doctors = $derived($doctorsQuery.data?.result ?? []);
 	let fuse = new Fuse<Doctor>([], {
-		keys: ['name', 'last_name'],
+		keys: ['name', 'last_name', 'speciality'],
 	});
 	let input: HTMLInputElement | undefined = $state();
 	$effect(() => {
