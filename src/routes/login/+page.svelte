@@ -9,6 +9,8 @@
 	import { z } from 'zod';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { OfficeService } from '$lib/services/office/office.service.svelte';
+	import toast from 'svelte-french-toast';
 
 	const auth = useAuth();
 
@@ -26,11 +28,17 @@
 		{
 			SPA: true,
 			validators: zodClient(loginSchema),
-			onUpdate({ form }) {
+			async onUpdate({ form }) {
 				if (form.valid) {
-					auth.login({
-						name: form.data.username,
+					const res = await OfficeService.login({
+						username: form.data.username,
+						password: form.data.password,
 					});
+					if (!res) {
+						toast.error('incorrect username or password');
+						return false;
+					}
+					auth.login(res);
 				}
 			},
 		},

@@ -1,3 +1,8 @@
+<script module lang="ts">
+	import { QueryClientProvider, QueryClient } from '@tanstack/svelte-query';
+	export const queryClient = new QueryClient();
+</script>
+
 <script lang="ts">
 	import '../app.css';
 	import { i18n } from '$lib/i18n';
@@ -8,6 +13,7 @@
 	import jalaliday from 'jalaliday';
 	import { onMount } from 'svelte';
 	import { StorageService } from '$lib/services/storage/storage.service.svelte';
+	import { Toaster } from 'svelte-french-toast';
 
 	onMount(() => {
 		dayjs.extend(jalaliday).calendar('jalali');
@@ -20,8 +26,11 @@
 </script>
 
 <ParaglideJS {i18n}>
-	{@render children()}
+	<QueryClientProvider client={queryClient}>
+		{@render children()}
+	</QueryClientProvider>
 </ParaglideJS>
+<Toaster />
 
 <style>
 	:global(body) {

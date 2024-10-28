@@ -1,28 +1,35 @@
 <script lang="ts">
 	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
 	import { m } from '$lib';
-	import { blur, fade, fly, scale, slide } from 'svelte/transition';
+	import { fly, scale, slide } from 'svelte/transition';
 	import Button from './button.svelte';
 	import TextInput from '$lib/components/text-input.svelte';
+	import { onMount } from 'svelte';
+	import { OfficeService } from '$lib/services/office/office.service.svelte';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { queryClient } from '../+layout.svelte';
+	import type { Doctor } from '$lib/services/office/interfaces/doctor';
 	interface Props {
-		onAddDoctor?(): void;
+		onAddDoctor?(doctor?: Doctor): void;
 	}
 
 	let { onAddDoctor }: Props = $props();
 
+	onMount(() => {
+		OfficeService.getDoctors().then(console.log);
+	});
 	let search = $state(false);
-	const doctors = [
-		{
-			fullName: 'مهران احمدی',
-			doctoralCode: '336584',
-			specialty: 'فوق تخصص مغز و اعصاب',
-		},
-		{
-			fullName: 'مهران احمدی',
-			doctoralCode: '336584',
-			specialty: 'فوق تخصص مغز و اعصاب',
-		},
-	];
+	let doctorsQuery = createQuery({
+		queryKey: ['/office/doctors'],
+		queryFn: OfficeService.getDoctors,
+	});
+	async function removeDoctor(id: string) {
+		await OfficeService.deleteDoctor(id.toString());
+		queryClient.invalidateQueries({
+			queryKey: ['/office/doctors'],
+		});
+	}
+	const doctors = $derived($doctorsQuery.data?.result ?? []);
 	let input: HTMLInputElement | undefined = $state();
 	$effect(() => {
 		if (input != null && search) {
@@ -78,7 +85,7 @@
 				{/if}
 			</div>
 			<button
-				onclick={onAddDoctor}
+				onclick={() => onAddDoctor?.()}
 				class="transition active:scale-95"
 				transition:scale
 			>
@@ -101,14 +108,22 @@
 			{#each doctors as doctor, index}
 				<tr class="border-b-dark-main-10 border-t-[1px] px-8">
 					<td class="py-4 text-center">{index + 1}</td>
-					<td class="py-4 text-center">{doctor.fullName}</td>
-					<td class="py-4 text-center">{doctor.doctoralCode}</td>
-					<td class="py-4 text-center">{doctor.specialty}</td>
+					<td class="py-4 text-center"
+						>{doctor.name + ' ' + doctor.last_name}</td
+					>
+					<td class="py-4 text-center">{doctor.doctor_code}</td>
+					<td class="py-4 text-center">{doctor.speciality}</td>
 					<td class="py-4 pl-7 text-left">
-						<Button class="ml-4 bg-soft-100">
+						<Button
+							onclick={() => onAddDoctor?.(doctor)}
+							class="ml-4 bg-soft-100"
+						>
 							<Edit3 class="m-auto size-5" />
 						</Button>
-						<Button class="bg-error-100">
+						<Button
+							onclick={() => removeDoctor(doctor.id)}
+							class="bg-error-100"
+						>
 							<Minus class="m-auto size-5" />
 						</Button>
 					</td>

@@ -7,20 +7,75 @@
 	import { m } from '$lib';
 	import { fly } from 'svelte/transition';
 	import type { MouseEventHandler } from 'svelte/elements';
+	import { OfficeService } from '$lib/services/office/office.service.svelte';
+	import { z } from 'zod';
+	import { superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { queryClient } from '../+layout.svelte';
+	import type { Doctor } from '$lib/services/office/interfaces/doctor';
+
+	const schema = z.object({
+		name: z.string().min(1),
+		last_name: z.string().min(1),
+		national_code: z.string().min(1),
+		doctor_code: z.string().min(1),
+		speciality: z.string().min(1),
+		email: z.string().email().optional(),
+	});
+	type Schema = z.infer<typeof schema>;
 
 	interface Props {
 		isOpen?: boolean;
 		onClose?(): void;
+		doctor?: Doctor;
 	}
 	const onMouseMove = _.throttle<MouseEventHandler<HTMLDivElement>>((e) => {
 		const { left, top } = e.currentTarget.getBoundingClientRect();
 		mouseX = e.x - left;
 		mouseY = e.y - top;
 	}, 75);
-	let { isOpen, onClose }: Props = $props();
+	let { isOpen, onClose, doctor }: Props = $props();
 
 	let mouseX = $state(0);
 	let mouseY = $state(0);
+	const { form, enhance } = superForm<Schema>(
+		doctor ?? {
+			email: '',
+			name: '',
+			last_name: '',
+			national_code: '',
+			doctor_code: '',
+			speciality: '',
+		},
+		{
+			SPA: true,
+			validators: zodClient(schema),
+			async onUpdate({ form }) {
+				if (form.valid) {
+					if (doctor) {
+						const res = await OfficeService.updateDoctor({
+							...form.data,
+							id: doctor.id,
+						});
+						if (res) {
+							queryClient.invalidateQueries({
+								queryKey: ['/office/doctors'],
+							});
+							onClose?.();
+						}
+					} else {
+						const res = await OfficeService.addDoctor(form.data);
+						if (res) {
+							queryClient.invalidateQueries({
+								queryKey: ['/office/doctors'],
+							});
+							onClose?.();
+						}
+					}
+				}
+			},
+		},
+	);
 </script>
 
 <Modal {isOpen} {onClose}>
@@ -45,39 +100,45 @@
 			>
 				<Plus class="size-6 rotate-45 text-foreground-100" />
 			</button>
-			<div class="flex flex-1 flex-col gap-5 px-9">
+			<form use:enhance class="flex flex-1 flex-col gap-5 px-9">
 				<div class="flex gap-3">
 					<TextInput
+						bind:value={$form.name}
 						placeholder={m.office_modal__name()}
 						class="bg-foreground-100"
 					/>
 					<TextInput
+						bind:value={$form.last_name}
 						placeholder={m.office_modal__surname()}
 						class="bg-foreground-100"
 					/>
 				</div>
 				<TextInput
+					bind:value={$form.doctor_code}
 					placeholder={m.office_modal__doctoral_code()}
 					class="bg-foreground-100"
 				/>
 				<TextInput
+					bind:value={$form.national_code}
 					placeholder={m.office_modal__national_code()}
 					class="bg-foreground-100"
 				/>
+				<!-- <TextInput -->
+				<!-- 	placeholder={m.office_modal__speciality_field()} -->
+				<!-- 	class="bg-foreground-100" -->
+				<!-- /> -->
 				<TextInput
-					placeholder={m.office_modal__speciality_field()}
-					class="bg-foreground-100"
-				/>
-				<TextInput
+					bind:value={$form.speciality}
 					placeholder={m.office_modal__speciality()}
 					class="bg-foreground-100"
 				/>
 				<TextInput
+					bind:value={$form.email}
 					placeholder={m.office_modal__email_optional()}
 					class="bg-foreground-100"
 				/>
 				<Button class="mt-auto">{m.office_modal__submit()}</Button>
-			</div>
+			</form>
 		</div>
 	</div>
 </Modal>

@@ -1,6 +1,5 @@
 <script module lang="ts">
 	import { StorageService } from '$lib/services/storage/storage.service.svelte';
-	import type { User } from '$lib/interfaces/user';
 	export function useAuth() {
 		const user = $derived(StorageService.user.value);
 		let auth = $state({
@@ -13,7 +12,7 @@
 					replaceState: true,
 				});
 			},
-			login(u: User) {
+			login(u: LoginResponseDto) {
 				StorageService.user.value = u;
 				goto('/', {
 					replaceState: true,
@@ -27,6 +26,7 @@
 <script lang="ts">
 	import { afterNavigate, goto } from '$app/navigation';
 	import { type Snippet } from 'svelte';
+	import type { LoginResponseDto } from '$lib/services/office/dto/login-response.dto';
 	let { children }: { children: Snippet } = $props();
 	const auth = useAuth();
 	afterNavigate(() => {

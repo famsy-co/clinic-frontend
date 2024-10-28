@@ -12,7 +12,7 @@ export class OfficeService {
 		dto: OfficeLoginRequestDto,
 	): Promise<LoginResponseDto | undefined> {
 		const response = await HttpService.post<LoginResponseDto>(
-			'/auth/office/login',
+			'/office/auth/login',
 			dto,
 		);
 		if (response.status < 300) {
@@ -46,7 +46,10 @@ export class OfficeService {
 	public static async updateDoctor(
 		dto: DoctorUpdateRequestDto,
 	): Promise<Doctor | undefined> {
-		const response = await HttpService.put<Doctor>('/office/doctors/' + dto.id);
+		const response = await HttpService.patch<Doctor>(
+			'/office/doctors/' + dto.id,
+			dto,
+		);
 		if (response.status < 300 && response.data) {
 			return response.data;
 		}

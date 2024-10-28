@@ -1,18 +1,19 @@
 import axios from 'axios';
+import { PUBLIC_API_URL } from '$env/static/public';
 
 import { StorageService } from '../storage/storage.service.svelte';
 
 export const HttpService = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_URL,
+	baseURL: PUBLIC_API_URL,
 	headers: {
 		'Content-Type': 'application/json',
 	},
-	validateStatus: (status) => status < 300,
+	validateStatus: (status) => status < 500 && status !== 401,
 });
 
 HttpService.interceptors.request.use(
 	function (config) {
-		const token = StorageService.user_token.value;
+		const token = StorageService.user.value?.access_token;
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
