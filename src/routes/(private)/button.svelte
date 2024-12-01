@@ -10,7 +10,7 @@
 		'size-7 rounded-lg text-center text-foreground-100 transition active:scale-95',
 		className,
 	)}
-	transition:scale|global
+	transition:scale
 	{...props}
 >
 	{#if children}
