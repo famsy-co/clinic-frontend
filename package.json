@@ -52,6 +52,7 @@
 		"axios": "^1.7.9",
 		"clsx": "^2.1.1",
 		"dayjs": "^1.11.13",
+		"flowbite-svelte": "^0.47.4",
 		"jalaliday": "^2.3.0",
 		"lodash": "^4.17.21",
 		"svelte-feathers": "^1.0.6",
