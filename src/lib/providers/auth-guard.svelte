@@ -31,7 +31,9 @@
 	const auth = useAuth();
 	afterNavigate(() => {
 		if (!auth.user) {
-			goto('/login');
+			goto('/login', {
+				replaceState: true,
+			});
 		}
 	});
 </script>
