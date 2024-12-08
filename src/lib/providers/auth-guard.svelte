@@ -14,9 +14,13 @@
 			},
 			login(u: LoginResponseDto) {
 				StorageService.user.value = u;
-				goto('/', {
-					replaceState: true,
-				});
+				if (u.office) {
+					goto('/office', {
+						replaceState: true,
+					});
+				} else if (u.doctor) {
+					goto('/doctor', { replaceState: true });
+				}
 			},
 		});
 		return auth;

@@ -11,7 +11,7 @@
 	import { z } from 'zod';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { queryClient } from '../+layout.svelte';
+	import { queryClient } from '../../+layout.svelte';
 	import type { Doctor } from '$lib/services/office/interfaces/doctor';
 
 	const schema = z.object({

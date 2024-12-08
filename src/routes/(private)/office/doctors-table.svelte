@@ -7,10 +7,11 @@
 	import { onMount } from 'svelte';
 	import { OfficeService } from '$lib/services/office/office.service.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { queryClient } from '../+layout.svelte';
+	import { queryClient } from '../../+layout.svelte';
 	import type { Doctor } from '$lib/services/office/interfaces/doctor';
 	import Fuse from 'fuse.js';
 	import { useAuth } from '$lib/providers/auth-guard.svelte';
+	import { goto } from '$app/navigation';
 	interface Props {
 		onAddDoctor?(doctor?: Doctor): void;
 	}
@@ -124,8 +125,10 @@
 					{#each searchResult.length ? searchResult : doctors as doctor, index}
 						<tr class="border-b-dark-main-10 border-t-[1px] px-8">
 							<td class="py-4 text-center">{index + 1}</td>
-							<td class="py-4 text-center"
-								>{doctor.name + ' ' + doctor.last_name}</td
+							<td class="py-4 text-center">
+								<button onclick={() => goto(`/doctors/${doctor.id}`)}>
+									{doctor.name + ' ' + doctor.last_name}</button
+								></td
 							>
 							<td class="py-4 text-center">{doctor.doctor_code}</td>
 							<td class="py-4 text-center">{doctor.speciality}</td>

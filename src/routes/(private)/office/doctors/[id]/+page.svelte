@@ -3,6 +3,10 @@
 	import { LogOut } from 'svelte-feathers';
 	import type { Doctor } from '$lib/services/office/interfaces/doctor';
 	import Navbar from './navbar.svelte';
+	import type { PageData } from './$types';
+
+	const { data }: { data: PageData } = $props();
+	console.log(data.id);
 
 	const auth = useAuth();
 	let isAddModalOpen = $state(false);
