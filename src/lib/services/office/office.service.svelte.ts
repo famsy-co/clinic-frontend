@@ -2,17 +2,16 @@ import { HttpService } from '../http/http.service';
 import type { DoctorCreateRequestDto } from './dto/doctor-create-request.dto';
 import type { DoctorListResponseDto } from './dto/doctor-list-response.dto';
 import type { DoctorUpdateRequestDto } from './dto/doctor-update-request.dto';
+import type { InfoResponseDto } from './dto/info-response.dto';
 import type { LoginResponseDto } from './dto/login-response.dto';
 import type { OfficeLoginRequestDto } from './dto/office-login-request.dto';
 import type { Doctor } from './interfaces/doctor';
-import type { Office } from './interfaces/office';
-
 export class OfficeService {
 	public static async login(
 		dto: OfficeLoginRequestDto,
 	): Promise<LoginResponseDto | undefined> {
 		const response = await HttpService.post<LoginResponseDto>(
-			'/office/auth/login',
+			'/auth/login',
 			dto,
 		);
 		if (response.status < 300) {
@@ -20,8 +19,8 @@ export class OfficeService {
 		}
 	}
 
-	public static async getOffice(): Promise<Office | undefined> {
-		const response = await HttpService.get<Office>('/auth/office/self');
+	public static async getMe(): Promise<InfoResponseDto | undefined> {
+		const response = await HttpService.get<InfoResponseDto>('/auth/self');
 
 		if (response.status < 300 && response.data) {
 			return;
