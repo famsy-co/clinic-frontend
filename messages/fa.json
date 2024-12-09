@@ -1,6 +1,8 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"general_order": "ردیف",
+	"general_name": "نام",
+	"general_lastname": "نام خانوادگی",
 	"general_national_code": "کد ملی",
 	"general_phone_number": "تلفن همراه",
 
@@ -38,5 +40,11 @@
 	"week_tuesday": "سه‌شنبه",
 	"week_wednesday": "چهارشنبه",
 	"week_thursday": "پنجشنبه",
-	"time_range": "بازه‌ی زمانی"
+	"time_range": "بازه‌ی زمانی",
+
+	"doctor_home_patients": "بیماران",
+	"doctor_home_patient_name": "نام بیمار",
+	"doctor_home_patient_date": "تاریخ",
+	"doctor_home_patient_day": "روز",
+	"doctor_home_patient_time": "ساعت"
 }
