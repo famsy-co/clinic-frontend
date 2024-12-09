@@ -7,7 +7,7 @@ import type { DoctorScheduleResponseDto } from './dtos/schedule-response.dto';
 import type { SetScheduleRequestDto } from './dtos/set-schedule-request.dto';
 import type { SetScheduleResponseDto } from './dtos/set-schedule-response.dto';
 
-interface Ids {
+export interface Ids {
 	id: string;
 	apid: string;
 }
