@@ -5,6 +5,7 @@
 	import DoctorsTable from './doctors-table.svelte';
 	import DoctorAddModal from './doctor-add-modal.svelte';
 	import type { Doctor } from '$lib/services/office/interfaces/doctor';
+
 	const auth = useAuth();
 	let isAddModalOpen = $state(false);
 	function closeAddModal() {
@@ -21,7 +22,7 @@
 
 <!-- HTML -->
 <header
-	class="flex h-16 items-center justify-between bg-dark-main-100 px-5 text-2xl text-foreground-100"
+	class="absolute left-0 right-0 top-0 flex h-16 items-center justify-between bg-dark-main-100 px-5 text-2xl text-foreground-100"
 >
 	<p>{user?.office.name}</p>
 	<button onclick={auth.logout}>

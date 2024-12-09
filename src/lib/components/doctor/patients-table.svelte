@@ -2,25 +2,29 @@
 	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
 	import { m } from '$lib';
 	import { fade, fly, scale, slide } from 'svelte/transition';
-	import Button from './button.svelte';
+	import Button from '../button.svelte';
 	import TextInput from '$lib/components/text-input.svelte';
 	import { onMount } from 'svelte';
 	import { OfficeService } from '$lib/services/office/office.service.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { queryClient } from '../../+layout.svelte';
+	import { queryClient } from '../../../routes/+layout.svelte';
 	import type { Doctor } from '$lib/services/office/interfaces/doctor';
 	import Fuse from 'fuse.js';
 	import { useAuth } from '$lib/providers/auth-guard.svelte';
 	import { goto } from '$app/navigation';
+	import type { Appointment } from '$lib/services/office/interfaces/appointment';
+	import { DoctorService } from '$lib/services/doctor/doctor-service.svelte';
+
 	interface Props {
-		onAddDoctor?(doctor?: Doctor): void;
+		doctor_id: string;
+		onAddAppointment?(appointment?: Appointment): void;
 	}
 
-	let { onAddDoctor }: Props = $props();
+	let { doctor_id, onAddAppointment }: Props = $props();
 	const { user } = useAuth();
 
 	onMount(() => {
-		OfficeService.getDoctors().then(console.log);
+		DoctorService.getAppointments(doctor_id).then(console.log);
 	});
 	let search = $state(false);
 	let searchValue = $state('');
@@ -30,7 +34,7 @@
 		queryFn: OfficeService.getDoctors,
 	});
 
-	async function removeDoctor(id: string) {
+	async function removeAppointment(id: string) {
 		await OfficeService.deleteDoctor(id.toString());
 		queryClient.invalidateQueries({
 			queryKey: ['/office/doctors'],
@@ -38,7 +42,7 @@
 	}
 
 	const doctors = $derived($doctorsQuery.data?.result ?? []);
-	
+
 	let fuse = new Fuse<Doctor>([], {
 		keys: ['name', 'last_name', 'speciality'],
 	});
@@ -126,34 +130,6 @@
 						<th class="w-1/5 py-4"></th>
 					</tr>
 				</thead>
-				<tbody class="px-8">
-					{#each searchResult.length ? searchResult : doctors as doctor, index}
-						<tr class="border-b-dark-main-10 border-t-[1px] px-8">
-							<td class="py-4 text-center">{index + 1}</td>
-							<td class="py-4 text-center">
-								<button onclick={() => goto(`/office/doctors/${doctor.id}`)}>
-									{doctor.name + ' ' + doctor.last_name}</button
-								></td
-							>
-							<td class="py-4 text-center">{doctor.doctor_code}</td>
-							<td class="py-4 text-center">{doctor.speciality}</td>
-							<td class="py-4 pl-7 text-left">
-								<Button
-									onclick={() => onAddDoctor?.(doctor)}
-									class="ml-4 bg-soft-100"
-								>
-									<Edit3 class="m-auto size-5" />
-								</Button>
-								<Button
-									onclick={() => removeDoctor(doctor.id)}
-									class="bg-error-100"
-								>
-									<Minus class="m-auto size-5" />
-								</Button>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
 			</table>
 		{/key}
 	</div>

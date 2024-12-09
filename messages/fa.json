@@ -1,18 +1,25 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"general_order": "ردیف",
+	"general_national_code": "کد ملی",
+	"general_phone_number": "تلفن همراه",
+
 	"hello_world": "Hello, {name} from fa!",
 	"error_field_required": "این فیلد الزامیست",
+
 	"login__login": "ورود",
 	"login__username": "نام کاربری",
 	"login__password": "رمز عبور",
+
 	"office_address": "آدرس:",
 	"office_phone_number": "شماره تلفن:",
 	"office_postal_code": "کد پستی:",
+
 	"office_home_doctors": "پزشکان",
 	"office_home_doctor_name": "نام پزشک",
 	"office_home_doctoralCode": "کد نظام پزشکی",
 	"office_home_specialty": "تخصص",
+
 	"office_modal__name": "نام",
 	"office_modal__surname": "نام خانوادگی",
 	"office_modal__doctoral_code": "شماره‌ی نظام پزشکی",
@@ -21,5 +28,15 @@
 	"office_modal__speciality": "تخصص",
 	"office_modal__phone_number": "تلفن همراه",
 	"office_modal__email_optional": "ایمیل (اختیاری)",
-	"office_modal__submit": "ثبت"
+
+	"office_modal__submit": "ثبت",
+	"patient_fullname": "نام بیمار",
+
+	"week_saturday": "شنبه",
+	"week_sunday": "یکشنبه",
+	"week_monday": "دوشنبه",
+	"week_tuesday": "سه‌شنبه",
+	"week_wednesday": "چهارشنبه",
+	"week_thursday": "پنجشنبه",
+	"time_range": "بازه‌ی زمانی"
 }

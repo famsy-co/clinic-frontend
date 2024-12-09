@@ -60,4 +60,9 @@ export class OfficeService {
 			return true;
 		}
 	}
+
+	public static async getDoctorInfo(id: string): Promise<Doctor> {
+		const response = await HttpService.get<Doctor>('/office/doctors/' + id);
+		return response.data;
+	}
 }
