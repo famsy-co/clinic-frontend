@@ -38,5 +38,8 @@
 	"week_tuesday": "سه‌شنبه",
 	"week_wednesday": "چهارشنبه",
 	"week_thursday": "پنجشنبه",
-	"time_range": "بازه‌ی زمانی"
+	"time_range": "بازه‌ی زمانی",
+
+	"even": "زوج",
+	"odd": "فرد"
 }
