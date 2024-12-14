@@ -3,12 +3,12 @@
 	import { LogOut } from 'svelte-feathers';
 	import Navbar from './navbar.svelte';
 	import type { PageData } from './$types';
-	import type { Patient } from '$lib/services/office/interfaces/patient';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { OfficeService } from '$lib/services/office/office.service.svelte';
 	import DoctorSchedule from '$lib/components/doctor/doctor-schedule.svelte';
-	import PatientsTable from '$lib/components/doctor/patients-table.svelte';
+	import AppointmentsTable from '$lib/components/doctor/appointments-table.svelte';
 	import type { Appointment } from '$lib/services/office/interfaces/appointment';
+	import AppointmentAddModal from './appointment-add-modal.svelte';
 
 	const { data }: { data: PageData } = $props();
 
@@ -57,15 +57,16 @@
 	<div class="flex flex-col items-center">
 		<DoctorSchedule />
 		{#if $doctorQuery.data}
-			<PatientsTable
+			<AppointmentsTable
 				doctor_id={$doctorQuery.data.id}
 				onAddAppointment={openAddModal}
 			/>
-			<!-- {#key selectedAppointment}
+			<!--{#key selectedAppointment}
 				<AppointmentAddModal
-					doctor={selectedAppointment}
+					appointment={selectedAppointment}
 					isOpen={!!selectedAppointment || isAddModalOpen}
 					onClose={closeAddModal}
+					doctor_id={$doctorQuery.data.id}
 				/>
 			{/key} -->
 		{/if}
