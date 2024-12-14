@@ -2,19 +2,19 @@
 	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
 	import { m } from '$lib';
 	import { fade, fly, scale, slide } from 'svelte/transition';
-	import Button from '../button.svelte';
+	import Button from '../../../routes/(private)/office/button.svelte';
 	import TextInput from '$lib/components/text-input.svelte';
 	import { onMount } from 'svelte';
-	import { OfficeService } from '$lib/services/office/office.service.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { queryClient } from '../../../routes/+layout.svelte';
-	import type { Doctor } from '$lib/services/office/interfaces/doctor';
 	import Fuse from 'fuse.js';
 	import { useAuth } from '$lib/providers/auth-guard.svelte';
-	import { goto } from '$app/navigation';
 	import type { Appointment } from '$lib/services/office/interfaces/appointment';
-	import { DoctorService } from '$lib/services/doctor/doctor-service.svelte';
 
+	import {
+		DoctorService,
+		type Ids,
+	} from '$lib/services/doctor/doctor-service.svelte';
 	interface Props {
 		doctor_id: string;
 		onAddAppointment?(appointment?: Appointment): void;
@@ -26,25 +26,33 @@
 	onMount(() => {
 		DoctorService.getAppointments(doctor_id).then(console.log);
 	});
+
 	let search = $state(false);
 	let searchValue = $state('');
 
-	let doctorsQuery = createQuery({
-		queryKey: ['/office/doctors', user?.office.username],
-		queryFn: OfficeService.getDoctors,
+	let appointmentsQuery = createQuery({
+		queryKey: [`/office/doctors/${doctor_id}/appointments`],
+		queryFn: async () => DoctorService.getAppointments(doctor_id),
 	});
 
-	async function removeAppointment(id: string) {
-		await OfficeService.deleteDoctor(id.toString());
-		queryClient.invalidateQueries({
-			queryKey: ['/office/doctors'],
+	let schedulesQuery = createQuery({
+		queryKey: [`/office/doctors/${doctor_id}/schedules`],
+		queryFn: async () => DoctorService.getSchedule(doctor_id),
+	});
+	$effect(() => {
+		console.log($schedulesQuery.data);
+	});
+
+	async function removeAppointment(ids: Ids) {
+		await DoctorService.deleteAppointment(ids);
+		await queryClient.invalidateQueries({
+			queryKey: [`/office/doctors/${ids.id}/appointments/${ids.apid}`],
 		});
 	}
+	const appointments = $derived($appointmentsQuery.data?.result ?? []);
 
-	const doctors = $derived($doctorsQuery.data?.result ?? []);
-
-	let fuse = new Fuse<Doctor>([], {
-		keys: ['name', 'last_name', 'speciality'],
+	let fuse = new Fuse<Appointment>([], {
+		keys: ['patient.first_name', 'patient.last_name'],
 	});
 
 	let input: HTMLInputElement | undefined = $state();
@@ -55,7 +63,7 @@
 	});
 
 	const searchResult = $derived.by(() => {
-		fuse.setCollection(doctors);
+		fuse.setCollection(appointments);
 		const res = fuse.search(searchValue);
 		return res.map((item) => item.item);
 	});
@@ -66,7 +74,7 @@
 		class="flex h-12 flex-grow items-center justify-between rounded-t-2xl bg-gradient-to-l from-dark-main-100 to-main-100
                 p-8 text-2xl text-foreground-100"
 	>
-		<p>{m.office_home_doctors()}</p>
+		<p>{m.doctor_home_patients()}</p>
 
 		<div class="flex gap-5">
 			<div class="flex items-center">
@@ -108,13 +116,6 @@
 					</div>
 				{/if}
 			</div>
-			<button
-				onclick={() => onAddDoctor?.()}
-				class="transition active:scale-95"
-				transition:scale
-			>
-				<Plus />
-			</button>
 		</div>
 	</div>
 
@@ -123,13 +124,50 @@
 			<table transition:fade class="s-table relative w-full table-fixed">
 				<thead class="px-8">
 					<tr>
-						<th class="w-1/5 py-4">{m.general_order()}</th>
-						<th class="w-1/5 py-4">{m.office_home_doctor_name()}</th>
-						<th class="w-1/5 py-4">{m.office_home_doctoralCode()}</th>
-						<th class="w-1/5 py-4">{m.office_home_specialty()}</th>
-						<th class="w-1/5 py-4"></th>
+						<th class="w-1/7 py-4">{m.general_order()}</th>
+						<th class="w-1/7 py-4">{m.doctor_home_patient_name()}</th>
+						<th class="w-1/7 py-4">{m.doctor_home_patient_date()}</th>
+						<th class="w-1/7 py-4">{m.doctor_home_patient_day()}</th>
+						<th class="w-1/7 py-4">{m.doctor_home_patient_time()}</th>
+						<th class="w-1/7 py-4">{m.general_phone_number()}</th>
+						<th class="w-1/7 py-4"></th>
 					</tr>
 				</thead>
+
+				<tbody class="px-8">
+					{#each searchResult.length ? searchResult : appointments as appointment, index}
+						<tr class="border-b-dark-main-10 border-t-[1px] px-8">
+							<td class="py-4 text-center">{index + 1}</td>
+							<td class="py-4 text-center">
+								{appointment.patient.first_name +
+									' ' +
+									appointment.patient.last_name}
+							</td>
+							<td class="py-4 text-center">{''}</td>
+							<td class="py-4 text-center">{''}</td>
+							<td class="py-4 text-center">{''}</td>
+							<td class="py-4 text-center">
+								{appointment.patient.phone_number}
+							</td>
+
+							<td class="py-4 text-center">
+								<!-- <Button
+									onclick={() => onAddAppointment?.(appointment)}
+									class="ml-4 bg-soft-100"
+								>
+									<Edit3 class="m-auto size-5" />
+								</Button> -->
+								<Button
+									onclick={() =>
+										removeAppointment({ apid: appointment.id, id: doctor_id })}
+									class="bg-error-100"
+								>
+									<Minus class="m-auto size-5" />
+								</Button>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
 			</table>
 		{/key}
 	</div>
