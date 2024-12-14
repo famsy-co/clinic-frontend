@@ -8,20 +8,19 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { queryClient } from '../../../routes/+layout.svelte';
 	import Fuse from 'fuse.js';
-	import { useAuth } from '$lib/providers/auth-guard.svelte';
 	import type { Appointment } from '$lib/services/office/interfaces/appointment';
 
 	import {
 		DoctorService,
 		type Ids,
 	} from '$lib/services/doctor/doctor-service.svelte';
+
 	interface Props {
 		doctor_id: string;
 		onAddAppointment?(appointment?: Appointment): void;
 	}
 
 	let { doctor_id, onAddAppointment }: Props = $props();
-	const { user } = useAuth();
 
 	onMount(() => {
 		DoctorService.getAppointments(doctor_id).then(console.log);
@@ -40,13 +39,16 @@
 		queryFn: async () => DoctorService.getSchedule(doctor_id),
 	});
 	$effect(() => {
-		console.log($schedulesQuery.data);
+		console.log('schedule',$schedulesQuery.data?.table);
 	});
 
 	async function removeAppointment(ids: Ids) {
 		await DoctorService.deleteAppointment(ids);
 		await queryClient.invalidateQueries({
 			queryKey: [`/office/doctors/${ids.id}/appointments/${ids.apid}`],
+		});
+		queryClient.invalidateQueries({
+			queryKey: [`/office/doctors/${doctor_id}/appointments`],
 		});
 	}
 	const appointments = $derived($appointmentsQuery.data?.result ?? []);
@@ -116,6 +118,13 @@
 					</div>
 				{/if}
 			</div>
+			<button
+				onclick={() => onAddAppointment?.()}
+				class="transition active:scale-95"
+				transition:scale
+			>
+				<Plus />
+			</button>
 		</div>
 	</div>
 
@@ -151,12 +160,12 @@
 							</td>
 
 							<td class="py-4 text-center">
-								<!-- <Button
+								<Button
 									onclick={() => onAddAppointment?.(appointment)}
 									class="ml-4 bg-soft-100"
 								>
 									<Edit3 class="m-auto size-5" />
-								</Button> -->
+								</Button>
 								<Button
 									onclick={() =>
 										removeAppointment({ apid: appointment.id, id: doctor_id })}
