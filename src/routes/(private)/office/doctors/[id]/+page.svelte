@@ -11,7 +11,6 @@
 	import type { Appointment } from '$lib/services/office/interfaces/appointment';
 
 	const { data }: { data: PageData } = $props();
-	console.log(data.id);
 
 	const auth = useAuth();
 	let isAddModalOpen = $state(false);
@@ -36,28 +35,39 @@
 
 <!-- HTML -->
 <header
-	class="absolute left-0 right-0 top-0 flex h-16 items-center justify-between bg-dark-main-100 px-5 text-2xl text-foreground-100"
+	class="sticky left-0 right-0 top-0 z-50 flex h-16 items-center justify-between bg-dark-main-100 px-5 text-2xl text-foreground-100"
 >
 	<div class="flex gap-4">
 		<a href="/office">{user?.office.name}</a>
 		<p>/</p>
-		<a href={`/office/doctors/${data.id}`}
-			>{$doctorQuery.data?.name + ' ' + $doctorQuery.data?.last_name}</a
-		>
+		{#if $doctorQuery.data}
+			<a href={`/office/doctors/${data.id}`}>
+				{$doctorQuery.data?.name + ' ' + $doctorQuery.data?.last_name}
+			</a>
+		{/if}
 	</div>
 	<button onclick={auth.logout}>
 		<LogOut class="size-5" />
 	</button>
 </header>
 
-<Navbar doctor={$doctorQuery.data} />
+<div class="flex">
+	<Navbar doctor={$doctorQuery.data} />
 
-<div class="ms-60 mt-16 flex flex-col items-center">
-	<DoctorSchedule />
-	{#if $doctorQuery.data}
-		<PatientsTable
-			doctor_id={$doctorQuery.data.id}
-			onAddAppointment={openAddModal}
-		/>
-	{/if}
+	<div class="flex flex-col items-center">
+		<DoctorSchedule />
+		{#if $doctorQuery.data}
+			<PatientsTable
+				doctor_id={$doctorQuery.data.id}
+				onAddAppointment={openAddModal}
+			/>
+			<!-- {#key selectedAppointment}
+				<AppointmentAddModal
+					doctor={selectedAppointment}
+					isOpen={!!selectedAppointment || isAddModalOpen}
+					onClose={closeAddModal}
+				/>
+			{/key} -->
+		{/if}
+	</div>
 </div>

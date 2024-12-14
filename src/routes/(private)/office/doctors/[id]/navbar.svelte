@@ -11,7 +11,7 @@
 </script>
 
 <nav
-	class="absolute bottom-0 right-0 top-16 w-60 border-l-2 border-l-dark-main-100 bg-foreground-100 p-5 shadow-xl"
+	class="sticky bottom-0 right-0 top-16 h-dvh w-60 flex-shrink-0 border-l-2 border-l-dark-main-100 bg-foreground-100 p-5 shadow-xl"
 >
 	<label class="text-xs">{m.office_modal__speciality()}:</label>
 	<TextInput
