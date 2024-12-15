@@ -7,8 +7,9 @@
 	import { OfficeService } from '$lib/services/office/office.service.svelte';
 	import DoctorSchedule from '$lib/components/doctor/doctor-schedule.svelte';
 	import AppointmentsTable from '$lib/components/doctor/appointments-table.svelte';
-	import type { Appointment } from '$lib/services/office/interfaces/appointment'; 
-	
+	import type { Appointment } from '$lib/services/office/interfaces/appointment';
+	import AppointmentAddModal from './appointment-add-modal.svelte';
+
 	const { data }: { data: PageData } = $props();
 
 	const auth = useAuth();
@@ -58,9 +59,10 @@
 			<DoctorSchedule doctor_id={$doctorQuery.data.id} />
 			<AppointmentsTable
 				doctor_id={$doctorQuery.data.id}
+				isDoctor={false}
 				onAddAppointment={openAddModal}
 			/>
-			<!--{#key selectedAppointment}
+			<!-- {#key selectedAppointment}
 				<AppointmentAddModal
 					appointment={selectedAppointment}
 					isOpen={!!selectedAppointment || isAddModalOpen}
