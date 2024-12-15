@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
+	import {
+		Search,
+		Plus,
+		Minus,
+		Edit3,
+		Check,
+		CheckCircle,
+		CheckSquare,
+	} from 'svelte-feathers';
 	import { m, toPersianDate } from '$lib';
 	import { fade, fly, scale, slide } from 'svelte/transition';
 	import Button from '../../../routes/(private)/office/button.svelte';
@@ -18,10 +26,11 @@
 	import dayjs from 'dayjs';
 	interface Props {
 		doctor_id: string;
+		isDoctor: boolean;
 		onAddAppointment?(appointment?: Appointment): void;
 	}
 
-	let { doctor_id, onAddAppointment }: Props = $props();
+	let { doctor_id, isDoctor, onAddAppointment }: Props = $props();
 
 	onMount(() => {
 		DoctorService.getAppointments(doctor_id).then(console.log);
@@ -40,7 +49,7 @@
 		queryFn: async () => DoctorService.getSchedule(doctor_id),
 	});
 	$effect(() => {
-		console.log('schedule',$schedulesQuery.data?.table);
+		console.log('schedule', $schedulesQuery.data?.table);
 	});
 
 	async function removeAppointment(ids: Ids) {
@@ -119,13 +128,15 @@
 					</div>
 				{/if}
 			</div>
-			<button
-				onclick={() => onAddAppointment?.()}
-				class="transition active:scale-95"
-				transition:scale
-			>
-				<Plus />
-			</button>
+			{#if !isDoctor}
+				<button
+					onclick={() => onAddAppointment?.()}
+					class="transition active:scale-95"
+					transition:scale
+				>
+					<Plus />
+				</button>
+			{/if}
 		</div>
 	</div>
 
@@ -173,19 +184,35 @@
 							</td>
 
 							<td class="py-4 text-center">
-								<Button
-									onclick={() => onAddAppointment?.(appointment)}
-									class="ml-4 bg-soft-100"
-								>
-									<Edit3 class="m-auto size-5" />
-								</Button>
-								<Button
-									onclick={() =>
-										removeAppointment({ apid: appointment.id, id: doctor_id })}
-									class="bg-error-100"
-								>
-									<Minus class="m-auto size-5" />
-								</Button>
+								{#if !isDoctor}
+									<Button
+										onclick={() => onAddAppointment?.(appointment)}
+										class="ml-4 bg-soft-100"
+									>
+										<Edit3 class="m-auto size-5" />
+									</Button>
+									<Button
+										onclick={() =>
+											removeAppointment({
+												apid: appointment.id,
+												id: doctor_id,
+											})}
+										class="bg-error-100"
+									>
+										<Minus class="m-auto size-5" />
+									</Button>
+								{:else}
+									<Button
+										class="border-[2px] border-main-100 bg-foreground-100 text-main-100 active:bg-main-100 active:text-foreground-100"
+										onclick={() =>
+											removeAppointment({
+												apid: appointment.id,
+												id: doctor_id,
+											})}
+									>
+										<Check class="m-auto size-5" />
+									</Button>
+								{/if}
 							</td>
 						</tr>
 					{/each}
