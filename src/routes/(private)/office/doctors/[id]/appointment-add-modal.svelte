@@ -133,11 +133,6 @@
 					placeholder={m.general_national_code()}
 					class="bg-foreground-100"
 				/>
-				<TextInput
-					bind:value={$form.schedule_id}
-					placeholder={m.office_modal__speciality()}
-					class="bg-foreground-100"
-				/>
 				<Button class="mt-auto">{m.office_modal__submit()}</Button>
 			</form>
 		</div>
