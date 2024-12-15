@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Search, Plus, Minus, Edit3 } from 'svelte-feathers';
-	import { m } from '$lib';
+	import { m, toPersianDate } from '$lib';
 	import { fade, fly, scale, slide } from 'svelte/transition';
 	import Button from '../../../routes/(private)/office/button.svelte';
 	import TextInput from '$lib/components/text-input.svelte';
@@ -15,6 +15,7 @@
 		type Ids,
 	} from '$lib/services/doctor/doctor-service.svelte';
 
+	import dayjs from 'dayjs';
 	interface Props {
 		doctor_id: string;
 		onAddAppointment?(appointment?: Appointment): void;
@@ -152,9 +153,21 @@
 									' ' +
 									appointment.patient.last_name}
 							</td>
-							<td class="py-4 text-center">{''}</td>
-							<td class="py-4 text-center">{''}</td>
-							<td class="py-4 text-center">{''}</td>
+							<td
+								class="py-4
+								text-center">{toPersianDate(appointment.appointment_time)}</td
+							>
+							<td
+								class="py-4
+								text-center">{dayjs(appointment.appointment_time).format('dddd')}</td
+							>
+							<td
+								class="py-4
+								text-center"
+								>{$schedulesQuery.data?.table.find(
+									(item) => item.id === appointment.schedule_id,
+								)?.time_range ?? ''}</td
+							>
 							<td class="py-4 text-center">
 								{appointment.patient.phone_number}
 							</td>

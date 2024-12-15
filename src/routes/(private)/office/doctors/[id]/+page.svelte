@@ -7,9 +7,8 @@
 	import { OfficeService } from '$lib/services/office/office.service.svelte';
 	import DoctorSchedule from '$lib/components/doctor/doctor-schedule.svelte';
 	import AppointmentsTable from '$lib/components/doctor/appointments-table.svelte';
-	import type { Appointment } from '$lib/services/office/interfaces/appointment';
-	import AppointmentAddModal from './appointment-add-modal.svelte';
-
+	import type { Appointment } from '$lib/services/office/interfaces/appointment'; 
+	
 	const { data }: { data: PageData } = $props();
 
 	const auth = useAuth();
@@ -55,8 +54,8 @@
 	<Navbar doctor={$doctorQuery.data} />
 
 	<div class="flex flex-col items-center">
-		<DoctorSchedule />
 		{#if $doctorQuery.data}
+			<DoctorSchedule doctor_id={$doctorQuery.data.id} />
 			<AppointmentsTable
 				doctor_id={$doctorQuery.data.id}
 				onAddAppointment={openAddModal}
