@@ -55,8 +55,8 @@
 	<Navbar doctor={$doctorQuery.data} />
 
 	<div class="flex flex-col items-center">
-		<DoctorSchedule />
 		{#if $doctorQuery.data}
+			<DoctorSchedule doctor_id={$doctorQuery.data.id} />
 			<PatientsTable
 				doctor_id={$doctorQuery.data.id}
 				onAddAppointment={openAddModal}
