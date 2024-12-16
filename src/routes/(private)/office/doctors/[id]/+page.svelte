@@ -62,14 +62,14 @@
 				isDoctor={false}
 				onAddAppointment={openAddModal}
 			/>
-			<!-- {#key selectedAppointment}
+			{#key selectedAppointment}
 				<AppointmentAddModal
 					appointment={selectedAppointment}
 					isOpen={!!selectedAppointment || isAddModalOpen}
 					onClose={closeAddModal}
 					doctor_id={$doctorQuery.data.id}
 				/>
-			{/key} -->
+			{/key}
 		{/if}
 	</div>
 </div>
