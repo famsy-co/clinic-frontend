@@ -55,21 +55,19 @@
 	<Navbar doctor={$doctorQuery.data} />
 
 	<div class="flex flex-col items-center">
-		{#if $doctorQuery.data}
-			<DoctorSchedule doctor_id={$doctorQuery.data.id} />
-			<AppointmentsTable
-				doctor_id={$doctorQuery.data.id}
-				isDoctor={false}
-				onAddAppointment={openAddModal}
+		<DoctorSchedule doctor_id={data.id} />
+		<AppointmentsTable
+			doctor_id={data.id}
+			isDoctor={false}
+			onAddAppointment={openAddModal}
+		/>
+		{#key selectedAppointment}
+			<AppointmentAddModal
+				appointment={selectedAppointment}
+				isOpen={!!selectedAppointment || isAddModalOpen}
+				onClose={closeAddModal}
+				doctor_id={data.id}
 			/>
-			{#key selectedAppointment}
-				<AppointmentAddModal
-					appointment={selectedAppointment}
-					isOpen={!!selectedAppointment || isAddModalOpen}
-					onClose={closeAddModal}
-					doctor_id={$doctorQuery.data.id}
-				/>
-			{/key}
-		{/if}
+		{/key}
 	</div>
 </div>
