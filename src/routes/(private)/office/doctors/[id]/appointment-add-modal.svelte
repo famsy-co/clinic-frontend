@@ -17,6 +17,7 @@
 	import SelectInput from '$lib/components/select-input.svelte';
 	import dayjs from 'dayjs';
 
+	let { isOpen, onClose, appointment, doctor_id }: Props = $props();
 	const appointmentSchema = z.object({
 		first_name: z.string(),
 		last_name: z.string(),
@@ -46,7 +47,6 @@
 		mouseX = e.x - left;
 		mouseY = e.y - top;
 	}, 75);
-	let { isOpen, onClose, appointment, doctor_id }: Props = $props();
 
 	let mouseX = $state(0);
 	let mouseY = $state(0);
@@ -62,23 +62,35 @@
 			SPA: true,
 			validators: zodClient(appointmentSchema),
 			async onUpdate({ form }) {
-				console.log(form);
 				if (form.valid) {
+					const data = form.data;
 					if (appointment) {
-						const res = await DoctorService.updateAppointment({
-							...form.data,
-							id: doctor_id,
-							apid: appointment.id,
-						});
+						const res = await DoctorService.updateAppointment(
+							{
+								...form.data,
+								id: doctor_id,
+								apid: appointment.id ?? '',
+							},
+							{
+								id: doctor_id,
+								appointment: {
+									patient: {
+										first_name: data.first_name,
+										last_name: data.last_name,
+										national_code: data.national_code,
+										phone_number: data.phone_number,
+									},
+									schedule_id: data.schedule_id,
+								},
+							},
+						);
 						if (res) {
 							queryClient.invalidateQueries({
 								queryKey: [`/office/doctors/${doctor_id}/appointments`],
 							});
 							onClose?.();
 						}
-					}
-					{
-						const data = form.data;
+					} else {
 						const res = await DoctorService.addAppointment({
 							id: doctor_id,
 							appointment: {
@@ -91,6 +103,12 @@
 								schedule_id: data.schedule_id,
 							},
 						});
+						if (res) {
+							queryClient.invalidateQueries({
+								queryKey: [`/office/doctors/${doctor_id}/appointments`],
+							});
+							onClose?.();
+						}
 						if (res) {
 							queryClient.invalidateQueries({
 								queryKey: [`/office/doctors/${doctor_id}/appointments`],

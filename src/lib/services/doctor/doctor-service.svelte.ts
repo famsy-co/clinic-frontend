@@ -53,9 +53,11 @@ export class DoctorService {
 
 	public static async updateAppointment(
 		ids: Ids,
+		dto: AddAppointmentRequestDto,
 	): Promise<Appointment | undefined> {
 		const response = await HttpService.put<Appointment>(
 			`/office/doctors/${ids.id}/appointments/${ids.apid}`,
+			dto.appointment,
 		);
 		if (response.status < 300 && response.data) {
 			return response.data;
